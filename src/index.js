@@ -29,7 +29,7 @@ const upload = multer({ storage: storage });
 function fixedBox(data){      
     return data.map((elem)=>{
         let num=Number(elem)
-        return num.toFixed(1)
+        return Math.round(num)
     })
 }
 
@@ -41,10 +41,10 @@ app.post('/upload', upload.single('stlFile'), (req, res) => { //el midleware upl
     console.log(stl.weight.toFixed(2) + 'g');       //  1g
     // Hacer algo con el archivo, por ejemplo, guardar la ruta en la base de datos
     res.json({ message: 'Archivo STL recibido y guardado con éxito',
-        weight:`${stl.weight.toFixed(2)} (g)`,
-        volume:`${stl.volume.toFixed(2)} (cm^3)`,
-        area:`${stl.area.toFixed(2)} (m^2)`,
-        boundingBox:`[${fixedBox(stl.boundingBox)}] (mm)`
+        weight:`${stl.weight.toFixed(2)}`,
+        volume:`${stl.volume.toFixed(2)} `,
+        area:`${stl.area.toFixed(2)}`,
+        boundingBox:`[${fixedBox(stl.boundingBox)}]`
     });
 });
 
