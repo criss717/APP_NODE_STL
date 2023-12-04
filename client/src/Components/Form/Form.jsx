@@ -158,6 +158,7 @@ const Form = () => {
 
   return (
     <div className='container'>
+      <img src='manfacter_blanco.png'></img>
       <form className='mt-2 form-control needs-validation' onSubmit={(e) => handlersubmit(e)} noValidate >
         <div className='col-12 mb-2'>
           <input className='form-control' onChange={(e) => handlerInputFile(e)} type="file" accept=".stl" required />
@@ -184,7 +185,8 @@ const Form = () => {
         </div>
 
       </form>
-      <div id="stl-preview"></div>
+      <div id="stl-preview"></div>   
+         
       <Table dataStl={dataStl} inputPrice={inputPrice} />
       <Colors setColorModel={setColorModel} />
     </div>
