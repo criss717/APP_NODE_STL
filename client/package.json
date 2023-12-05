@@ -17,7 +17,9 @@
     "react-bootstrap": "^2.9.1",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-player": "^2.13.0",
+    "styled-components": "^6.1.1",
     "three": "^0.159.0"
   },
   "devDependencies": {

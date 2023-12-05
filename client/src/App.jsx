@@ -2,18 +2,22 @@ import { useState } from 'react'
 import './App.css'
 import Form from './Components/Form/Form'
 import ReactPlayer from 'react-player';
+import NavBar from './Components/NavBar/NavBar';
+
 
 function App() { 
    
   return (
-    <div className='app'>
+    <div className='d-flex flex-column vw-100 vh-100 align-items-center'>        
+     
+      <NavBar/>     
       <div className='videoBackground'>
         <ReactPlayer
           url="file.mp4"
           playing={true}
           loop={true}
           muted={true}          
-          style={{ position: 'fixed', top: 0, left: 0 }}
+          style={{ position: 'fixed'}}
           config={{
             file: {
               attributes: { 
@@ -24,8 +28,11 @@ function App() {
             },
           }}
         />
-      </div>      
-      <Form/>        
+      </div> 
+      <div className='form'>
+        <Form/> 
+      </div>
+
     </div>
   )
 }

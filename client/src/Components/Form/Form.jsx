@@ -5,6 +5,8 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js'; // Ruta correcta 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import Table from '../Table/Table';
 import Colors from '../Colors/Colors';
+import s from '../Form/Form.module.css'
+import DropZone from '../DropZone/DropZone';
 
 const Form = () => {
   // Estados
@@ -15,7 +17,7 @@ const Form = () => {
 
   //creacion de escenas y camara
   const scene = new THREE.Scene(); 
-  scene.background = new THREE.Color('#f47373')
+  //scene.background = new THREE.Color('#f47373')
   const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -25,7 +27,7 @@ const Form = () => {
   camera.position.z = 10;
   
   //espacio para renderizar
-  const renderer = new THREE.WebGLRenderer();
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
   renderer.setSize(500, 500)
 
   const objectRef = useRef(); // para crear una referencia al objeto
@@ -63,30 +65,9 @@ const Form = () => {
       renderer.render(scene, camera); // dibuja la escena en el espacio div
     }
   }    
-
-  const loadModel = () => {
-    if (inputFile) {
-      let loader = new STLLoader();
-      loader.load(URL.createObjectURL(inputFile), (model) => {
-        const newObject = new THREE.Mesh(
-          model,
-          new THREE.MeshLambertMaterial({ color: colorModel })
-        );
-        newObject.scale.set(1, 1, 1);
-        newObject.position.set(0, 0, 0);
-        newObject.geometry.center(); // Ajusta el centro de masa, para que gire en su propio eje 
-        
-        scene.remove(objectRef.current); // Elimina el objeto anterior
-        objectRef.current = newObject;
-        init();
-        
-      });
-    }
-  };
  
   useEffect(() => {    
-    if (inputFile) { 
-      console.log('hola');     
+    if (inputFile) {           
       let loader = new STLLoader();
       loader.load(URL.createObjectURL(inputFile), (model) => {
         const newObject = new THREE.Mesh(
@@ -157,16 +138,16 @@ const Form = () => {
   }
 
   return (
-    <div className='container'>
-      <img src='manfacter_blanco.png'></img>
-      <form className='mt-2 form-control needs-validation' onSubmit={(e) => handlersubmit(e)} noValidate >
+    <div className={`container ${s.container}`}>      
+      <form className={`mt-2 form-control needs-validation ${s.containerForm}`} onSubmit={(e) => handlersubmit(e)} noValidate >
+        <DropZone setInputFile={setInputFile}/>
         <div className='col-12 mb-2'>
-          <input className='form-control' onChange={(e) => handlerInputFile(e)} type="file" accept=".stl" required />
+          <input className='form-control' onChange={(e) => handlerInputFile(e)} type="file" accept=".stl"  />
           <div className="invalid-feedback">required field</div>
         </div>
 
         <div className='row mb-2'>
-          <label className='col-8 col-form-label text-end' htmlFor='input-price'>Price x Kg (€)</label>
+          <label className='col-8 col-form-label text-end' style={{color: "black",fontWeight: "bold" }} htmlFor='input-price'>Price x Kg (€)</label>
           <div className='col-4'>
             <input
               type='number'
@@ -177,18 +158,26 @@ const Form = () => {
               onChange={(e) => handlerInputPrice(e)}
               value={inputPrice}
             />
-            <div className="invalid-feedback">value greater than 0</div>
+            <div className="invalid-feedback" style={{fontWeight: "bold" }}>value greater than 0</div>
           </div>
         </div>
         <div className='col-12 text-end'>
           <button className='btn btn-dark' type="submit">Submit</button>
         </div>
-
       </form>
-      <div id="stl-preview"></div>   
-         
-      <Table dataStl={dataStl} inputPrice={inputPrice} />
-      <Colors setColorModel={setColorModel} />
+      <div className='d-flex '>
+        <div id="stl-preview"></div>
+        <div>
+          {
+            inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
+          } 
+          {
+            inputFile && <Colors setColorModel={setColorModel} />
+          }          
+
+        </div>
+
+      </div>
     </div>
   );
 };
