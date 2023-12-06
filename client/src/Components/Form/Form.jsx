@@ -11,7 +11,7 @@ import DropZone from '../DropZone/DropZone';
 const Form = () => {
   // Estados
   const [inputFile, setInputFile] = useState(undefined); //para guardar archivo stl
-  const [inputPrice, setInputPrice] = useState('30') //para almacenar precio x Kg
+  const [inputPrice, setInputPrice] = useState(30) //para almacenar precio x Kg
   const [dataStl, setDataStl] = useState({}) //para almacenar la data que llega del back del archivo stl
   const [colorModel, setColorModel] = useState('#54C857') // para modificar el color por el usuario
   const [noValidate,setNoValidate] = useState(false)  
@@ -27,9 +27,10 @@ const Form = () => {
 
   //espacio para renderizar
   const renderer = new THREE.WebGLRenderer({ alpha: true }); //alpha deja el fondo del espacio 3D en transparente
-  renderer.setSize(500, 500)
+  renderer.setSize(400, 400)
 
   const objectRef = useRef(); // para crear una referencia al objeto
+  const animateRef = useRef(); // para que no se aumente la velocidad con cada render
 
   // inicializar la visualizacion del espacio 3D 
   function init() {
@@ -52,17 +53,17 @@ const Form = () => {
     let light2 = new THREE.DirectionalLight(0xffffff)
     light2.position.set(-25, -30, 10)
     scene.add(light2)
-
+    renderer.render(scene, camera); // dibuja la escena en el espacio div
     animate()
   }
 
-  function animate() { //para que gire automatico
-    requestAnimationFrame(animate)
+  function animate() { //para que gire automatico   
     if (objectRef.current) {
       objectRef.current.rotation.z += 0.01;
       objectRef.current.rotation.x += 0.01;
       renderer.render(scene, camera); // dibuja la escena en el espacio div
     }
+    animateRef.current = requestAnimationFrame(animate); // solicita el siguiente cuadro de animación, debe ser así para que no aumente la velocidad con cada renderización
   }
 
   useEffect(() => {
@@ -85,6 +86,10 @@ const Form = () => {
         renderModelHTML.appendChild(renderer.domElement); //montamos el nuevo
       });
     }
+    return () => {
+      // Limpiar el bucle de animación al desmontar el componente
+      cancelAnimationFrame(animateRef.current);
+    };
 
     (function () { //codigo para validar form bootrap 5   
       'use strict'
@@ -106,7 +111,7 @@ const Form = () => {
         })
     })()
   }, [colorModel, inputFile])
-
+   
   // Handlers
   const handlerSubmit = async (e) => {
     e.preventDefault();           
@@ -159,15 +164,20 @@ const Form = () => {
           <button className='btn btn-dark' type="submit">Calculate</button>
         </div>
       </form>
-      <div className='d-flex'>
-        <div id="stl-preview"></div>
-        <div>
+      <div  className={`d-flex flex-column align-items-center`}>
+        <div className={s.divModel}>
+          <div  id="stl-preview"></div>
+          <div className={s.divColors}>
+            {
+              inputFile && <Colors setColorModel={setColorModel} />
+            }
+          </div>
+        </div>
+        <div className='d-flex flex-column w-100'>
           {
             inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
           }
-          {
-            inputFile && <Colors setColorModel={setColorModel} />
-          }
+          
         </div>
       </div>
     </div>

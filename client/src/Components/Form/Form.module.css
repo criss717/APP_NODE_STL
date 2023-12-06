@@ -5,3 +5,13 @@
     backdrop-filter: blur(35px) !important; /* Aplica un desenfoque al fondo */
     border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Borde para resaltar */
 }
+
+.divColors{
+    position: absolute;
+    top:90%;
+    left: 15%;
+}
+
+.divModel{
+    position: relative;
+}

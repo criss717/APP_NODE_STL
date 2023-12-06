@@ -28,8 +28,8 @@ body {
   overflow-x: hidden;
 }
 .videoBackground {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 12%;
   left: 0;
   width: 100vw;  
   z-index: -1; /*Coloca el video por debajo */   

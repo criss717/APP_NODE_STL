@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
 function Table({ dataStl, inputPrice }) {
-    const [cost,setCost]=useState(0)
-    //handlers
-    const handlerCost=()=>{
+    const [cost,setCost]=useState('')   
+
+    useEffect(()=>{  
+        console.log(inputPrice,dataStl.weight);             
         if(dataStl.weight && inputPrice) {
             const calculate=Number(inputPrice)* Number(dataStl.weight)/ 1000           
             setCost(calculate.toFixed(2))
         }
-    }
-
-    useEffect(()=>{
-        setCost(0) //cada que el valor del precio cambie, ponemos el calculo en cero y asi se renderiza de nuevo el boton de calcular price
-    },[inputPrice])
+    },[inputPrice,dataStl])
 
     return (
-        <div className='table-responsive'>
+        <div className='table-responsive w-100 h-100 text-center'>
             <table className='table table-dark table-hover'>
                 <thead className='table-secondary'>
                     <tr>
@@ -43,10 +40,7 @@ function Table({ dataStl, inputPrice }) {
                     <tr>
                         <td>Cost (€)</td>
                         <td>
-                           {
-                            cost===0?<button onClick={() => handlerCost()} className='btn btn-light'>Calculate cost</button>
-                            :cost
-                           } 
+                           {cost}
                         </td>
                     </tr>
                 </tbody>
