@@ -12,6 +12,8 @@ const thumbsContainer = {
 
 function DropZone(props) {
   const [files, setFiles] = useState([]);
+  const [noValidate,setNoValidate] = useState(false)
+  
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'application/sla': ['.stl'],
@@ -26,7 +28,11 @@ function DropZone(props) {
   };
 
   useEffect(() => {
+    if(props.noValidate) {
+      setNoValidate(true)
+    }     
     if (files.length > 0) {
+      setNoValidate(false) // quitamos invalidez 
       const selectedFile = files[0];
       if (selectedFile) {
         if (selectedFile.name.endsWith('.stl')) {
@@ -42,7 +48,7 @@ function DropZone(props) {
   }, [files, props]);
 
   return (
-    <div className={`container ${s.container} mb-2`}>
+    <div className={`container ${s.container} ${noValidate&&s.containerInvalidate} ${files[0]&&s.containerWithFile} mb-2`}>
       <section>
         <div {...getRootProps({ className: 'dropzone' })}>
           <input {...getInputProps()} id="fileInput" />
@@ -64,11 +70,12 @@ function DropZone(props) {
 
       {/* Botón adicional para cargar archivos */}
       <button
-        type="button"
-        className={`btn btn-dark mt-2 ${s.button}`}
+        type="button"        
+        className={`btn btn-dark mt-2`}
         onClick={handleButtonClick}
       >
-        <i className="bi bi-cloud-upload-fill"></i> Upload file
+
+        <i className="bi bi-cloud-upload-fill"></i> {files[0]?'Change 3D Model':'Update 3D Model'}
       </button>
     </div>
   );

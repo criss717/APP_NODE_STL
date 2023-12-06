@@ -8,9 +8,11 @@ import NavBar from './Components/NavBar/NavBar';
 function App() { 
    
   return (
-    <div className='d-flex flex-column vw-100 vh-100 align-items-center'>        
-     
-      <NavBar/>     
+    <div className='d-flex flex-column vw-100 vh-100 align-items-center app'>      
+      <NavBar/>
+      <div className='titleH2 text-center'>
+        <h2 className='titleH2 m-0 p-0'>Upload your files to get an instant quote</h2>      
+      </div>     
       <div className='videoBackground'>
         <ReactPlayer
           url="file.mp4"
@@ -32,7 +34,6 @@ function App() {
       <div className='form'>
         <Form/> 
       </div>
-
     </div>
   )
 }

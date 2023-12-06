@@ -10,34 +10,33 @@ import DropZone from '../DropZone/DropZone';
 
 const Form = () => {
   // Estados
-  const [inputFile, setInputFile] = useState(); //para guardar archivo stl
-  const [inputPrice, setInputPrice] = useState('') //para almacenar precio x Kg
+  const [inputFile, setInputFile] = useState(undefined); //para guardar archivo stl
+  const [inputPrice, setInputPrice] = useState('30') //para almacenar precio x Kg
   const [dataStl, setDataStl] = useState({}) //para almacenar la data que llega del back del archivo stl
   const [colorModel, setColorModel] = useState('#54C857') // para modificar el color por el usuario
+  const [noValidate,setNoValidate] = useState(false)  
 
   //creacion de escenas y camara
-  const scene = new THREE.Scene(); 
-  //scene.background = new THREE.Color('#f47373')
+  const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
     10000
   );
-  camera.position.z = 10;
-  
+
   //espacio para renderizar
-  const renderer = new THREE.WebGLRenderer({ alpha: true });
+  const renderer = new THREE.WebGLRenderer({ alpha: true }); //alpha deja el fondo del espacio 3D en transparente
   renderer.setSize(500, 500)
 
   const objectRef = useRef(); // para crear una referencia al objeto
 
-  // inicializar la visualizacvion del espacio 3D 
+  // inicializar la visualizacion del espacio 3D 
   function init() {
     scene.add(objectRef.current); // añadimos el objeto  
 
     // Ajusta la posición de la cámara y el objetivo de la órbita
-    camera.position.set(0, 0, 100);
+    camera.position.set(0, 0, 70);
 
     let controls = new OrbitControls(camera, renderer.domElement) //controls es para darle al usuariuo la posibilidad de hacer scrol y girar dentro de la escena
     controls.target.set(0, 0, 0); // Establece el objetivo al centro de la escena
@@ -64,10 +63,11 @@ const Form = () => {
       objectRef.current.rotation.x += 0.01;
       renderer.render(scene, camera); // dibuja la escena en el espacio div
     }
-  }    
- 
-  useEffect(() => {    
-    if (inputFile) {           
+  }
+
+  useEffect(() => {
+    if (inputFile) {
+      console.log(inputFile);
       let loader = new STLLoader();
       loader.load(URL.createObjectURL(inputFile), (model) => {
         const newObject = new THREE.Mesh(
@@ -77,11 +77,11 @@ const Form = () => {
         newObject.scale.set(1, 1, 1);
         newObject.position.set(0, 0, 0);
         newObject.geometry.center(); // Ajusta el centro de masa, para que gire en su propio eje         
-        
+
         objectRef.current = newObject; //asigna un nuevo objeto a la referencia
         init();
         const renderModelHTML = document.getElementById('stl-preview');
-        renderModelHTML.innerHTML='' //limpiamos lo que hay de antes
+        renderModelHTML.innerHTML = '' //limpiamos lo que hay de antes
         renderModelHTML.appendChild(renderer.domElement); //montamos el nuevo
       });
     }
@@ -99,23 +99,17 @@ const Form = () => {
             if (!form.checkValidity()) {
               event.preventDefault()
               event.stopPropagation()
+              setNoValidate(true) // establecemos en true si hay alguna invalidada
             }
-
             form.classList.add('was-validated')
           }, false)
         })
     })()
   }, [colorModel, inputFile])
 
-      
   // Handlers
-  const handlerInputFile = (e) => {
-    const fileStl = e.target.files[0];
-    setInputFile(fileStl);
-  };
-
-  const handlersubmit = async (e) => {
-    e.preventDefault();
+  const handlerSubmit = async (e) => {
+    e.preventDefault();           
     try {
       const formData = new FormData();
       formData.append('stlFile', inputFile); // pone el archivo deleccionado en un form estilo objeto con propiedad llamada stlFile y valor: inputValue
@@ -129,26 +123,26 @@ const Form = () => {
       })
     } catch (error) {
       console.log(error);
-    }
+    }  
   };
-
+  
   const handlerInputPrice = (e) => {
     const { value } = e.target
     setInputPrice(value)
   }
 
   return (
-    <div className={`container ${s.container}`}>      
-      <form className={`mt-2 form-control needs-validation ${s.containerForm}`} onSubmit={(e) => handlersubmit(e)} noValidate >
-        <DropZone setInputFile={setInputFile}/>
+    <div className={`container ${s.container}`}>
+      <form className={`mt-2 form-control needs-validation ${s.containerForm}`} onSubmit={(e) => handlerSubmit(e)} noValidate >
         <div className='col-12 mb-2'>
-          <input className='form-control' onChange={(e) => handlerInputFile(e)} type="file" accept=".stl"  />
-          <div className="invalid-feedback">required field</div>
+          <input value={inputFile&&inputFile.name} type="text" className='d-none' required /> {/*la oculto para aprovechar el validate*/}
+          <DropZone setInputFile={setInputFile} noValidate={noValidate} />
+          <div className="invalid-feedback text-end" style={{ fontWeight: "bold" }}>Required file</div>
         </div>
 
         <div className='row mb-2'>
-          <label className='col-8 col-form-label text-end' style={{color: "black",fontWeight: "bold" }} htmlFor='input-price'>Price x Kg (€)</label>
-          <div className='col-4'>
+          <label className='col-9 col-form-label text-end' style={{ color: "black", fontWeight: "bold" }} htmlFor='input-price'>Price x Kg (€)</label>
+          <div className='col-3'>
             <input
               type='number'
               className='form-control'
@@ -158,25 +152,23 @@ const Form = () => {
               onChange={(e) => handlerInputPrice(e)}
               value={inputPrice}
             />
-            <div className="invalid-feedback" style={{fontWeight: "bold" }}>value greater than 0</div>
+            <div className="invalid-feedback text-end" style={{ fontWeight: "bold" }}>Value greater than 0</div>
           </div>
         </div>
         <div className='col-12 text-end'>
-          <button className='btn btn-dark' type="submit">Submit</button>
+          <button className='btn btn-dark' type="submit">Calculate</button>
         </div>
       </form>
-      <div className='d-flex '>
+      <div className='d-flex'>
         <div id="stl-preview"></div>
         <div>
           {
             inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
-          } 
+          }
           {
             inputFile && <Colors setColorModel={setColorModel} />
-          }          
-
+          }
         </div>
-
       </div>
     </div>
   );

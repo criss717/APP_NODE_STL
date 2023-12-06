@@ -23,16 +23,32 @@ body {
 .read-the-docs {
   color: #888;
 }
-
+.app{
+  overflow-y: auto;  
+  overflow-x: hidden;
+}
 .videoBackground {
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;  
-  z-index: -1; /*Coloca el video por debajo */  
-  opacity: 0.9;    
+  z-index: -1; /*Coloca el video por debajo */   
+}
+
+.titleH2 {
+  font-size: 2.5rem;
+  margin: 2rem;
+  color: rgb(255, 255, 255);
+  font-weight: bolder; 
+  width: 60vh; 
+}
+
+.titleH2 h2{
+  font-size: 2.8rem;  
+  color:rgb(255, 255, 255);
+  font-weight: bolder; 
 }
 
 .form{
-  width: 60vw;
+  width: 50vw;  
 }
