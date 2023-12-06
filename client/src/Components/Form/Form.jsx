@@ -7,14 +7,15 @@ import Table from '../Table/Table';
 import Colors from '../Colors/Colors';
 import s from '../Form/Form.module.css'
 import DropZone from '../DropZone/DropZone';
+import Placeholders from '../PlaceHolder/PlaceHolder';
 
 const Form = () => {
   // Estados
   const [inputFile, setInputFile] = useState(undefined); //para guardar archivo stl
   const [inputPrice, setInputPrice] = useState(30) //para almacenar precio x Kg
   const [dataStl, setDataStl] = useState({}) //para almacenar la data que llega del back del archivo stl
-  const [colorModel, setColorModel] = useState('#54C857') // para modificar el color por el usuario
-  const [noValidate,setNoValidate] = useState(false)  
+  const [colorModel, setColorModel] = useState('#0B19F0') // para modificar el color por el usuario
+  const [noValidate,setNoValidate] = useState(false)   
 
   //creacion de escenas y camara
   const scene = new THREE.Scene();
@@ -57,7 +58,7 @@ const Form = () => {
     animate()
   }
 
-  function animate() { //para que gire automatico   
+  function animate() { //para que gire automatico    
     if (objectRef.current) {
       objectRef.current.rotation.z += 0.01;
       objectRef.current.rotation.x += 0.01;
@@ -67,6 +68,7 @@ const Form = () => {
   }
 
   useEffect(() => {
+    console.log(objectRef.current);    
     if (inputFile) {
       console.log(inputFile);
       let loader = new STLLoader();
@@ -80,10 +82,10 @@ const Form = () => {
         newObject.geometry.center(); // Ajusta el centro de masa, para que gire en su propio eje         
 
         objectRef.current = newObject; //asigna un nuevo objeto a la referencia
-        init();
         const renderModelHTML = document.getElementById('stl-preview');
         renderModelHTML.innerHTML = '' //limpiamos lo que hay de antes
         renderModelHTML.appendChild(renderer.domElement); //montamos el nuevo
+        init();
       });
     }
     
@@ -111,7 +113,7 @@ const Form = () => {
         // Limpiar el bucle de animación al desmontar el componente
         cancelAnimationFrame(animateRef.current);
       };
-  }, [colorModel, inputFile])
+  }, [colorModel, inputFile ])
    
   // Handlers
   const handlerSubmit = async (e) => {
@@ -170,16 +172,18 @@ const Form = () => {
           <div  id="stl-preview"></div>
           <div className={s.divColors}>
             {
-              inputFile && <Colors setColorModel={setColorModel} />
+              objectRef.current  && <Colors setColorModel={setColorModel} />
             }
           </div>
         </div>
-        <div className='d-flex flex-column w-100 mt-5 align-items-center'>
-          {
-            inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
-          }
-          
-        </div>
+        {
+          dataStl.weight ?
+          <div className='d-flex flex-column w-100 mt-5 align-items-center'>
+            {
+              inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
+            }          
+          </div>: <Placeholders/>
+        }
       </div>
     </div>
   );

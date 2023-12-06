@@ -6,7 +6,7 @@ class Colors extends React.Component {
         super(props)
         
         this.state= {
-            background: '#00ff00',            
+            background: '#0B19F0',            
         }                
     }    
 
