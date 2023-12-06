@@ -37,7 +37,7 @@ const Form = () => {
     scene.add(objectRef.current); // añadimos el objeto  
 
     // Ajusta la posición de la cámara y el objetivo de la órbita
-    camera.position.set(0, 0, 70);
+    camera.position.set(0, 0, 60);
 
     let controls = new OrbitControls(camera, renderer.domElement) //controls es para darle al usuariuo la posibilidad de hacer scrol y girar dentro de la escena
     controls.target.set(0, 0, 0); // Establece el objetivo al centro de la escena
@@ -86,14 +86,10 @@ const Form = () => {
         renderModelHTML.appendChild(renderer.domElement); //montamos el nuevo
       });
     }
-    return () => {
-      // Limpiar el bucle de animación al desmontar el componente
-      cancelAnimationFrame(animateRef.current);
-    };
-
+    
     (function () { //codigo para validar form bootrap 5   
       'use strict'
-
+      
       // Fetch all the forms we want to apply custom Bootstrap validation styles to
       var forms = document.querySelectorAll('.needs-validation')
 
@@ -109,7 +105,12 @@ const Form = () => {
             form.classList.add('was-validated')
           }, false)
         })
-    })()
+      })()
+
+      return () => {
+        // Limpiar el bucle de animación al desmontar el componente
+        cancelAnimationFrame(animateRef.current);
+      };
   }, [colorModel, inputFile])
    
   // Handlers
@@ -173,7 +174,7 @@ const Form = () => {
             }
           </div>
         </div>
-        <div className='d-flex flex-column w-100'>
+        <div className='d-flex flex-column w-100 mt-5 align-items-center'>
           {
             inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
           }

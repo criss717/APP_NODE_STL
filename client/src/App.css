@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  overflow:auto; /*para poder hacer scroll en la pagina*/
+  overflow-y:auto; /*para poder hacer scroll en la pagina*/
 }
 
 #root {  
@@ -26,29 +26,39 @@ body {
 .app{
   overflow-y: auto;  
   overflow-x: hidden;
+  position: relative;
+  z-index: -2;
 }
 .videoBackground {
-  position: fixed;
-  top: 12%;
-  left: 0;
+  position: relative; 
+  height: auto;
   width: 100vw;  
-  z-index: -1; /*Coloca el video por debajo */   
+  z-index: -3; /*Coloca el video por debajo */   
 }
 
 .titleH2 {
   font-size: 2.5rem;
-  margin: 2rem;
-  color: rgb(255, 255, 255);
+  margin: 2rem;  
   font-weight: bolder; 
-  width: 60vh; 
+  width: 100vw; 
+  margin-bottom: 10rem; 
+  display: flex;
+  justify-content: center; 
 }
 
 .titleH2 h2{
   font-size: 2.8rem;  
-  color:rgb(255, 255, 255);
+  color:rgb(7, 7, 7);
   font-weight: bolder; 
+  width: 40vw;
 }
 
 .form{
   width: 50vw;  
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  margin-top: -9rem;
 }

@@ -16,22 +16,26 @@ function App() {
           url="file.mp4"
           playing={true}
           loop={true}
-          muted={true}          
-          style={{ position: 'fixed'}}
+          muted={true}   
+          width={'100vw'} 
+          height={'fit-content'}         
           config={{
             file: {
               attributes: { 
                 style: {
-                  objectFit: 'cover', //para q ocupe todo el contenido asi se deforme
+                  objectFit: 'cover', //para q ocupe todo el contenido asi se deforme                  
+                  width:'100vw',
+                  height:'900px',                 
+                  borderTop:'4px solid #f7c634'             
                 },
               },
             },
           }}
         />
+        <div className='form'>
+          <Form/> 
+        </div>
       </div> 
-      <div className='form'>
-        <Form/> 
-      </div>
     </div>
   )
 }
