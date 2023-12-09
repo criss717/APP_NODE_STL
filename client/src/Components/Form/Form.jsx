@@ -28,7 +28,12 @@ const Form = () => {
 
   //espacio para renderizar
   const renderer = new THREE.WebGLRenderer({ alpha: true }); //alpha deja el fondo del espacio 3D en transparente
-  renderer.setSize(400, 400)
+
+  if(window.innerWidth<500){ //para ajustar tamaño pantalla
+    renderer.setSize(300,300)
+  } else {
+    renderer.setSize(400,400)
+  }
 
   const objectRef = useRef(); // para crear una referencia al objeto
   const animateRef = useRef(); // para que no se aumente la velocidad con cada render
@@ -38,8 +43,12 @@ const Form = () => {
     scene.add(objectRef.current); // añadimos el objeto  
 
     // Ajusta la posición de la cámara y el objetivo de la órbita
-    camera.position.set(0, 0, 60);
-
+    if(window.innerWidth<500){ //para ajustar tamaño pantalla
+      camera.position.set(0, 0, 120);
+    } else if(window.innerWidth<800) {
+      camera.position.set(0, 0, 80);
+    } else camera.position.set(0, 0, 60);
+ 
     let controls = new OrbitControls(camera, renderer.domElement) //controls es para darle al usuariuo la posibilidad de hacer scrol y girar dentro de la escena
     controls.target.set(0, 0, 0); // Establece el objetivo al centro de la escena
     controls.enableDamping = true;
@@ -68,7 +77,9 @@ const Form = () => {
   }
 
   useEffect(() => {
-    console.log(objectRef.current);    
+    console.log(objectRef.current);  
+    console.log(window.innerWidth, window.innerHeight);
+    console.log(window.innerWidth / window.innerHeight);  
     if (inputFile) {
       console.log(inputFile);
       let loader = new STLLoader();
@@ -113,7 +124,7 @@ const Form = () => {
         // Limpiar el bucle de animación al desmontar el componente
         cancelAnimationFrame(animateRef.current);
       };
-  }, [colorModel, inputFile ])
+  }, [colorModel, inputFile])
    
   // Handlers
   const handlerSubmit = async (e) => {
@@ -149,8 +160,8 @@ const Form = () => {
         </div>
 
         <div className='row mb-2'>
-          <label className='col-9 col-form-label text-end' style={{ color: "black", fontWeight: "bold" }} htmlFor='input-price'>Price x Kg (€)</label>
-          <div className='col-3'>
+          <label className='col-7 col-sm-9 col-md-10 col-xl-9 col-form-label text-end' style={{ color: "black", fontWeight: "bold" }} htmlFor='input-price'>Price x Kg (€)</label>
+          <div className={`col-sm-3 col-5 col-md-2 col-xl-3`}>
             <input
               type='number'
               className='form-control'
@@ -167,10 +178,10 @@ const Form = () => {
           <button className='btn btn-dark' type="submit">Calculate</button>
         </div>
       </form>
-      <div  className={`d-flex flex-column align-items-center`}>
+      <div className={`d-flex flex-column align-items-center`}>
         <div className={s.divModel}>
           <div  id="stl-preview"></div>
-          <div className={s.divColors}>
+          <div className={`${s.divColors}`}>
             {
               objectRef.current  && <Colors setColorModel={setColorModel} />
             }
@@ -178,7 +189,7 @@ const Form = () => {
         </div>
         {
           dataStl.weight ?
-          <div className='d-flex flex-column w-100 mt-5 align-items-center'>
+          <div className='d-flex flex-column col-12 col-sm-11 mt-4 align-items-center'>
             {
               inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
             }          

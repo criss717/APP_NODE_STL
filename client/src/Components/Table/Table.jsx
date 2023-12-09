@@ -12,7 +12,7 @@ function Table({ dataStl, inputPrice }) {
     },[inputPrice,dataStl])
 
     return (
-        <div className='table-responsive w-75 h-100 text-center'>
+        <div className='w-100 h-100 text-center'>
             <table className='table table-dark table-hover'>
                 <thead className='table-secondary'>
                     <tr>

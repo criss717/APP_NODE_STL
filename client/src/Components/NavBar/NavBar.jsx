@@ -4,13 +4,14 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import s from '../NavBar/NavBar.module.css'
 
 function NavBar() {
   return (
     <Navbar expand="lg" data-bs-theme="dark" className="bg-body-tertiary vw-100">
       <Container fluid>
         <Navbar.Brand href="#">
-            <img src="manfacter_blanco.png" alt="" />
+            <img className={s.imgLogo} src="manfacter_blanco.png" alt="" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">

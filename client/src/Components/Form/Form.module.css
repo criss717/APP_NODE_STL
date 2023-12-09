@@ -12,9 +12,16 @@
 .divColors{
     position: absolute;
     top:100%;
-    left: 15%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    margin: 0;
+    padding: 0;
 }
 
 .divModel{
     position: relative;
+}
+
+@media (max-width:600px){
+   
 }

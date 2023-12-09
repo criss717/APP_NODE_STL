@@ -32,7 +32,7 @@ function App() {
             },
           }}
         />
-        <div className='form'>
+        <div className='col-10 col-lg-9 col-xl-6 col-xxl-4 form'>
           <Form/> 
         </div>
       </div> 
