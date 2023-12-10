@@ -140,7 +140,7 @@ const Form = () => {
     try {
       const formData = new FormData();
       formData.append('stlFile', inputFile); // pone el archivo deleccionado en un form estilo objeto con propiedad llamada stlFile y valor: inputValue
-      const { data } = await axios.post('http://localhost:3001/upload', formData);
+      const { data } = await axios.post('https://node-stol-back.onrender.com/upload', formData);
       console.log(data);
       setDataStl({
         weight: data.weight,
