@@ -26,7 +26,7 @@ function App() {
                   objectFit: 'cover', //para q ocupe todo el contenido asi se deforme                  
                   width:'100vw',
                   height:'900px',                 
-                  borderTop:'4px solid #f7c634'             
+                  borderTop:'4px solid #ffc600'             
                 },
               },
             },

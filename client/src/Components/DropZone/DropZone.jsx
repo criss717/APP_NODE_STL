@@ -35,7 +35,7 @@ function DropZone(props) {
       setNoValidate(false) // quitamos invalidez 
       const selectedFile = files[0];
       if (selectedFile) {
-        if (selectedFile.name.endsWith('.stl')) {
+      if (selectedFile.name.endsWith('.stl')) {          
           props.setInputFile(selectedFile);
         } else {
           // Archivo no cumple con las validaciones

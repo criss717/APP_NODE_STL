@@ -14,9 +14,11 @@ const Form = () => {
   const [inputFile, setInputFile] = useState(undefined); //para guardar archivo stl
   const [inputPrice, setInputPrice] = useState(30) //para almacenar precio x Kg
   const [dataStl, setDataStl] = useState({}) //para almacenar la data que llega del back del archivo stl
-  const [colorModel, setColorModel] = useState('#0B19F0') // para modificar el color por el usuario
-  const [noValidate,setNoValidate] = useState(false)   
-
+  const [colorModel, setColorModel] = useState('#ffc600') // para modificar el color por el usuario
+  const [noValidate, setNoValidate] = useState(false)
+  const [isSend, setIsSend] = useState(false)   //para renderizar spiners
+  const [isAutoRotateEnabled, setIsAutoRotateEnabled] = useState(true); // para cancelar animacion automatica
+  
   //creacion de escenas y camara
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -29,10 +31,10 @@ const Form = () => {
   //espacio para renderizar
   const renderer = new THREE.WebGLRenderer({ alpha: true }); //alpha deja el fondo del espacio 3D en transparente
 
-  if(window.innerWidth<500){ //para ajustar tamaño pantalla
-    renderer.setSize(300,300)
+  if (window.innerWidth < 500) { //para ajustar tamaño pantalla
+    renderer.setSize(300, 300)
   } else {
-    renderer.setSize(400,400)
+    renderer.setSize(400, 400)
   }
 
   const objectRef = useRef(); // para crear una referencia al objeto
@@ -43,13 +45,13 @@ const Form = () => {
     scene.add(objectRef.current); // añadimos el objeto  
 
     // Ajusta la posición de la cámara y el objetivo de la órbita
-    if(window.innerWidth<500){ //para ajustar tamaño pantalla
-      camera.position.set(0, 0, 120);
-    } else if(window.innerWidth<800) {
+    if (window.innerWidth < 500) { //para ajustar tamaño pantalla
+      camera.position.set(0, 0, 110);
+    } else if (window.innerWidth < 800) {
       camera.position.set(0, 0, 80);
-    } else camera.position.set(0, 0, 60);
- 
-    let controls = new OrbitControls(camera, renderer.domElement) //controls es para darle al usuariuo la posibilidad de hacer scrol y girar dentro de la escena
+    } else camera.position.set(0, 0, 65);
+
+    let controls = new OrbitControls(camera, renderer.domElement) //controls es para darle al usuario la posibilidad de hacer scrol y girar dentro de la escena
     controls.target.set(0, 0, 0); // Establece el objetivo al centro de la escena
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
@@ -68,19 +70,15 @@ const Form = () => {
   }
 
   function animate() { //para que gire automatico    
-    if (objectRef.current) {
-      objectRef.current.rotation.z += 0.01;
-      objectRef.current.rotation.x += 0.01;
-      renderer.render(scene, camera); // dibuja la escena en el espacio div
+    if (objectRef.current && isAutoRotateEnabled) {
+      objectRef.current.rotation.y += 0.01;
     }
+    renderer.render(scene, camera); // dibuja la escena en el espacio div
     animateRef.current = requestAnimationFrame(animate); // solicita el siguiente cuadro de animación, debe ser así para que no aumente la velocidad con cada renderización
   }
 
   useEffect(() => {
-    console.log(objectRef.current);  
-    console.log(window.innerWidth, window.innerHeight);
-    console.log(window.innerWidth / window.innerHeight);  
-    if (inputFile) {
+    if (inputFile) {      
       console.log(inputFile);
       let loader = new STLLoader();
       loader.load(URL.createObjectURL(inputFile), (model) => {
@@ -99,10 +97,10 @@ const Form = () => {
         init();
       });
     }
-    
+
     (function () { //codigo para validar form bootrap 5   
       'use strict'
-      
+
       // Fetch all the forms we want to apply custom Bootstrap validation styles to
       var forms = document.querySelectorAll('.needs-validation')
 
@@ -118,17 +116,27 @@ const Form = () => {
             form.classList.add('was-validated')
           }, false)
         })
-      })()
+    })()
 
-      return () => {
-        // Limpiar el bucle de animación al desmontar el componente
-        cancelAnimationFrame(animateRef.current);
-      };
-  }, [colorModel, inputFile])
-   
+    return () => {      
+      // Limpiar el bucle de animación al desmontar el componente
+      cancelAnimationFrame(animateRef.current);
+    };
+  }, [colorModel, isAutoRotateEnabled,inputFile])
+  
+  useEffect(()=>{
+    setIsAutoRotateEnabled(true) // para que cada q cambie de archivo activar el automatico giro
+    if (inputFile) {
+      if (isSend) {
+        setIsSend(false) // para ocultar la tabla en caso q  el user cambie de archivo
+        setDataStl({}) //limpiamos los datos del anterior archivo
+      }
+    }  
+  },[inputFile])
   // Handlers
   const handlerSubmit = async (e) => {
-    e.preventDefault();           
+    setIsSend(true) // ponemos en true para renderizar tabla o el placeHolder
+    e.preventDefault();
     try {
       const formData = new FormData();
       formData.append('stlFile', inputFile); // pone el archivo deleccionado en un form estilo objeto con propiedad llamada stlFile y valor: inputValue
@@ -142,9 +150,13 @@ const Form = () => {
       })
     } catch (error) {
       console.log(error);
-    }  
+    }
   };
-  
+
+  const handlerStopAndPlayAnimation = () => {
+    isAutoRotateEnabled ? setIsAutoRotateEnabled(false) : setIsAutoRotateEnabled(true)   
+  }
+
   const handlerInputPrice = (e) => {
     const { value } = e.target
     setInputPrice(value)
@@ -154,7 +166,7 @@ const Form = () => {
     <div className={`container ${s.container}`}>
       <form className={`mt-2 form-control needs-validation ${s.containerForm}`} onSubmit={(e) => handlerSubmit(e)} noValidate >
         <div className='col-12 mb-2'>
-          <input value={inputFile&&inputFile.name} type="text" className='d-none' required /> {/*la oculto para aprovechar el validate*/}
+          <input value={inputFile && inputFile.name} type="text" className='d-none' required /> {/*la oculto para aprovechar el validate*/}
           <DropZone setInputFile={setInputFile} noValidate={noValidate} />
           <div className="invalid-feedback text-end" style={{ fontWeight: "bold" }}>Required file</div>
         </div>
@@ -175,26 +187,41 @@ const Form = () => {
           </div>
         </div>
         <div className='col-12 text-end'>
-          <button className='btn btn-dark' type="submit">Calculate</button>
+          <button className='btn btn-dark' type="submit">
+            {
+              dataStl.weight || !isSend ?
+                <span>Calculate</span>
+                : <div className={`spinner-border ${s.spinner}`}role="status"></div>
+            }
+          </button>
         </div>
       </form>
       <div className={`d-flex flex-column align-items-center`}>
         <div className={s.divModel}>
-          <div  id="stl-preview"></div>
-          <div className={`${s.divColors}`}>
-            {
-              objectRef.current  && <Colors setColorModel={setColorModel} />
-            }
-          </div>
+          <div id="stl-preview"></div>
+          {
+            objectRef.current && (
+              <div className={`${s.divColors}`}>
+                <button className={`btn btn-dark ${s.buttonStopAndPlay}`} onClick={() => handlerStopAndPlayAnimation()}>
+                  {
+                    isAutoRotateEnabled? <i className="bi bi-stop-fill"></i> 
+                    : <i className="bi bi-play-fill"></i>
+                  }              
+                </button>            
+                <Colors setColorModel={setColorModel} />            
+              </div>
+            )
+          }
         </div>
-        {
-          dataStl.weight ?
-          <div className='d-flex flex-column col-12 col-sm-11 mt-4 align-items-center'>
-            {
-              inputFile && <Table dataStl={dataStl} inputPrice={inputPrice} />
-            }          
-          </div>: <Placeholders/>
-        }
+
+        <div className={`d-flex flex-column col-12 col-sm-11 align-items-center ${s.divTable}`}>
+          {isSend &&
+            (dataStl.weight ?
+              <Table dataStl={dataStl} inputPrice={inputPrice} />
+              : <Placeholders />)
+          }
+        </div>
+
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ function Table({ dataStl, inputPrice }) {
                         <td>{dataStl.volume}</td>
                     </tr>
                     <tr>
-                        <td>Area (m^2)</td>
+                        <td>Area (m)</td>
                         <td>{dataStl.area}</td>
                     </tr>
                     <tr>

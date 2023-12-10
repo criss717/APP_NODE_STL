@@ -11,17 +11,34 @@
 
 .divColors{
     position: absolute;
-    top:100%;
+    top:95%;
     left: 50%;
     transform: translate(-50%,-50%);
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .divModel{
-    position: relative;
+    position: relative;   
 }
 
-@media (max-width:600px){
-   
+.buttonStopAndPlay{
+    margin: 1rem;          
+}
+.buttonStopAndPlay i{
+    font-size: 1.5rem;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.divTable{
+    margin-top: 3rem;
+}
+
+.spinner{
+    width: 20px !important;
+    height: 20px !important;
 }
